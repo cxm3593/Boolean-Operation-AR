@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Boolean Operation for modeling in AR/VR environment | CSCI 716</title>
+	</head>
+	<body>
+		<h1>Boolean Operation for modeling in AR/VR environment | CSCI 716</h1>
+		<h2>Introduction</h2>
+		<p>
+			In traditional modeling softwares like Maya,
+			users work with a flat screen but when 3D positions are projected
+			into a 2D screen, the sense of depth is lost in the process.
+			Modeling with XR devices provide an advantage by viewing models
+			in a 3d environment. 
+			There are existing VR modeling applications
+			so this project aims to build a prototype for 3D modeling in 
+			AR environment.
+		</p>
+		<h2>Objective</h2>
+		<ul>
+			<li>
+				Use boolean operation algorithm for 3d modelling in an 
+				AR/VR environment.
+			</li>
+			<li>
+				Target platform is magic leap.
+				<ul>
+					<li>
+						Since magic leap is not very stable. A fallback
+						option would be Oculus.
+					</li>
+				</ul>
+			</li>
+			<li>
+				The user can observe a 3D model and edit it by grabbing 
+				another object and intersecting them together.
+			</li>
+			<li>
+				The intersection will invoke boolean operation algorithm
+				and then modify the target object.
+			</li>
+			<li>
+				Final presentation will have a video demo and a short slide
+				presentation.
+			</li>
+		</ul>
+		<h2>Challenges</h2>
+			<ul>
+				<li><b>How to modify 3d mesh in Unreal at run time?</b></li>
+				<p>
+					Epic geometry team developed a plugin to do it, it is
+					called <b>Geometry Processing Plugin</b>. It is a little
+					complicated to use this plugin because we need to compile 
+					an unreal editor with the plugin from source code. 
+					But the plugin is also very powerful. It provides a 
+					complete framework for geometry editing at run time.
+				</p>
+				<li>
+					<b>How to implement boolean operation in 3D?</b>
+				<p>
+					Boolean operation is derived from map overlapping
+					algorithm which connected to plane sweep algorithm.
+					Text book Computational Geometry by Mark de Berg covers
+					a 2D version of it. A challenge will be extending it
+					for an extra dimension.
+				</p>
+				</li>
+				<li>
+					<b>How to do it in AR/VR?</b>
+				<p>
+					Magic Leap works with unreal 4. It provides a SDK for 
+					developing AR applications.
+					But magic leap is not very stable. So a backup plan is
+					to use SteamVR or Oculus VR for Oculus development.
+				</p>
+				</li>
+			</ul>
+		<h2>Weekly Plan</h2>
+		<ul>
+			<li>Week 6 & Week7: Setting up the project</li>
+			<li>Week 8: Mesh editing at runtime</li>
+			<li>Week 9: 3D Boolean Operation</li>
+			<li>Week 10: Debugging with a flat screen environment.</li>
+			<li>Week 11: Integrating into AR environment.</li>
+			<li>Week 12: Installing AR control, object anchor</li>
+			<li>Week 13: Improvements on rendering and modeling experience 
+				/ (Fallback to Oculus in the worst case)</li>
+			<li>Week 14: Final debugging 
+				/ (Fallback to Oculus in the worst case)</li>
+			<li>Week 15: In-class final project presentations</li>
+		</ul>
+		<h2>References</h2>
+		<ul>
+			<li>
+				DeBerg, M. (2011). Cram101 textbook outlines to accompany: 
+			Computational geometry: Algorithms and applications. Cram101. 
+			</li>
+			<li>
+				<a href="url">http://www.gradientspace.com/tutorials/2020/10/23/runtime-mesh-generation-in-ue426</a>
+			</li>
+			<li>
+				<a href="url">http://www.gradientspace.com/tutorials/2020/9/21/command-line-geometry-processing-with-unreal-engine</a>
+			</li>
+		</ul>
+	</body>
+</html>
