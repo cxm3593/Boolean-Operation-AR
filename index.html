@@ -4,8 +4,10 @@
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>Boolean Operation for modeling in AR/VR environment | CSCI 716</title>
+		<link rel="stylesheet" href="styles.css">
 	</head>
 	<body>
+		
 		<h1>Boolean Operation for modeling in AR/VR environment | CSCI 716</h1>
 		<p>Chengyi Ma</p>
 		<h2>Introduction</h2>
@@ -15,83 +17,64 @@
 			into a 2D screen, the sense of depth is lost in the process.
 			Modeling with XR devices provide an advantage by viewing models
 			in a 3d environment. 
-			There are existing VR modeling applications
-			so this project aims to build a prototype for 3D modeling in 
-			AR environment.
 		</p>
-		<h2>Objective</h2>
-		<ul>
-			<li>
-				Use boolean operation algorithm for 3d modelling in an 
-				AR/VR environment.
-			</li>
-			<li>
-				Target platform is magic leap.
-				<ul>
-					<li>
-						Since magic leap is not very stable. A fallback
-						option would be Oculus.
-					</li>
-				</ul>
-			</li>
-			<li>
-				The user can observe a 3D model and edit it by grabbing 
-				another object and intersecting them together.
-			</li>
-			<li>
-				The intersection will invoke boolean operation algorithm
-				and then modify the target object.
-			</li>
-			<li>
-				Final presentation will have a video demo and a short slide
-				presentation.
-			</li>
-		</ul>
-		<h2>Challenges</h2>
-			<ul>
-				<li><b>How to modify 3d mesh in Unreal at run time?</b></li>
-				<p>
-					Epic geometry team developed a plugin to do it, it is
-					called <b>Geometry Processing Plugin</b>. It is a little
-					complicated to use this plugin because we need to compile 
-					an unreal editor with the plugin from source code. 
-					But the plugin is also very powerful. It provides a 
-					complete framework for geometry editing at run time.
-				</p>
-				<li>
-					<b>How to implement boolean operation in 3D?</b>
-				<p>
-					Boolean operation is derived from map overlapping
-					algorithm which connected to plane sweep algorithm.
-					Text book Computational Geometry by Mark de Berg covers
-					a 2D version of it. A challenge will be extending it
-					for an extra dimension.
-				</p>
-				</li>
-				<li>
-					<b>How to do it in AR/VR?</b>
-				<p>
-					Magic Leap works with unreal 4. It provides a SDK for 
-					developing AR applications.
-					But magic leap is not very stable. So a backup plan is
-					to use SteamVR or Oculus VR for Oculus development.
-				</p>
-				</li>
-			</ul>
-		<h2>Weekly Plan</h2>
-		<ul>
-			<li>Week 6 & Week7: Setting up the project</li>
-			<li>Week 8: Mesh editing at runtime</li>
-			<li>Week 9: 3D Boolean Operation</li>
-			<li>Week 10: Debugging with a flat screen environment.</li>
-			<li>Week 11: Integrating into AR environment.</li>
-			<li>Week 12: Installing AR control, object anchor</li>
-			<li>Week 13: Improvements on rendering and modeling experience 
-				/ (Fallback to Oculus in the worst case)</li>
-			<li>Week 14: Final debugging 
-				/ (Fallback to Oculus in the worst case)</li>
-			<li>Week 15: In-class final project presentations</li>
-		</ul>
+		<p>
+			This Project is a VR sculpting application with 3d Boolean operations. 
+			In the application, the user can put on an VR headset, 
+			and use VR motion controllers to grab several objects with different shapes 
+			as sculpting tools and press trigger button to use them to modify the mesh 
+			of a target object. 
+			The project was first intended to built for AR envrionment. However, magic
+			leap does not serve very well for the project's development. So I eventually
+			made it with a Oculus VR device.
+		</p>
+		<p>
+			This overview of project consists of two sections, the 3d Boolean operations 
+			algorithm and develop environment.
+		</p>
+		<h2>Algorithms</h2>
+		<p>
+			Project is on 3d Boolean operation. 
+			Boolean operations compare a set of polygon meshes and output a 
+			result of intersection, union, or difference.
+		</p>
+		<p>
+			We did not cover it in our class. But a related 2d algorithm is in our textbook in Chapter 2, line segment intersection, as a variation of map overlay algorithm. The algorithm in textbook takes two 2D connected edge list to calculate their union, intersection, and difference Boolean operations. However, we could not use it for 3d Boolean operations. Because modern 3d meshes are not built with a single polygon with lots of vertices and edges but multiple triangle faces.
+		</p>
+		<p>
+			3D Boolean algorithms are still under development nowadays. Researchers are developing new algorithms with better performance and robustness. Algorithms developed this year uses very complicated mathematical representations to improve the robustness and performance. For example, in July 2022, a newly published paper from Philip Trettner in SIGGRAPH described a method to use the intersection of faces to represent points lines rays, segments, and polygons. But to fully comprehend this method is far beyond a semester project.
+		</p>
+		<p>
+			So, For the 3d Boolean operation, this project refers to an earlier paper:  Efficient Booleans algorithms for triangulated meshes of geometric modeling by Jiang 2015. It introduced a more traditional algorithm to perform this operation in several stages. This method could be classified into 5 stages: Intersection detection, analyzing float point arithmetic errors, calculating intersection lines, retriangulation, creating submesh.
+		</p>
+		<p>
+			Intersection detection could be very time consuming is proper spatial data structure is not used, because we would have to compare each pair triangles to see if there is an intersection. With an octree, we could make the intersection detection much more efficient. The triangles will be classified into different segmented spaces while each space could be segmented into eight even cubic spaces if the total number of triangles exceeded the threshold for each space. With a similar idea, a kd-tree could further improve the intersection performance as a newer spatial data structure for such purposes. 
+		</p>
+		<p>
+			Once detection is found, the algorithm could generate an intersection line based on the intersection points. Plane sweep algorithm are used to retriangulate the intersecting points to create more triangles. Then the paper introduced a method to remesh the processed 3d mesh. First, select a point from the mesh and let it grow to its connected neighbors, if it reaches the intersection line, or no more not visited nodes exists, it switches to a new direction for growth. Repeat this process until all the new mesh is generated.
+		</p>
+		<h2>Environment</h2>
+		<p>
+			Project is based on Unreal 5 with several plugins including Oculus VR SDK, VR template and geometry plugin. The use of these plugins is necessary for Unreal 5. Since it does not support runtime mesh editing at all with the core engine. Unreal put high priority on optimizing rendering at real-time, but it undermines the flexibility with the use of data structure.	
+		</p>
+		<p>
+			Beware that both Unreal 5 and plugins are in its early stage. The application showed unstable performance. I am not sure if it is caused by my implementation or the plugin itself for now.
+		</p>
+		<h2>Demo</h2>
+		<a href="https://rit.zoom.us/rec/share/pLo3kWBQBzjwXYd6U7gP8BE0I_uS0jZf_9dQvvTVPW2P6BmTRsWlvZx6kipe0m0Q.tn8HuWq934j5ajDY?startTime=1670203909000">Video demo</a>
+		<p>
+			In the application there is a dynamically generated sphere mesh for the sculpting target and four static mesh objects to use as sculpting tools. It is not that I do not want to use more complicated objects for this demo, but there are problems with imported mesh working with the geometry plugin’s data structure. There are errors reported if I tried to convert static mesh to the dynamic mesh. So, for this demo, I only used mesh that could be generated within the engine.
+		</p>
+		<p>
+			The user could teleport around in a certain space and grab tool objects to place them into the sphere and press trigger button on the VR controller to perform the Boolean operation to sculpt the sphere into shapes that you want.
+		</p>
+		<p>
+			Some improvements could be done. As you can see that these objects are not textured, since that currently I am unable to find a method to reorganize the uv map on the sculpture object. Also as pointed out by the paper, it tends to generate too many triangles in the intersection area. Floating point arithmetic error them become an issue for the stability of the result. 
+		</p>
+		<p>
+			And this though the application works as intended. The whole environment is not stable. I had to use several tricks to get it working and it still through random errors about GPU crashing.  I think once the Unreal 5 engine and geometry runtime editing plugins get into a more stable version, it could get a better performance.
+		</p>
+
 		<h2>References</h2>
 		<ul>
 			<li>
@@ -103,6 +86,13 @@
 			</li>
 			<li>
 				<a href="url">http://www.gradientspace.com/tutorials/2020/9/21/command-line-geometry-processing-with-unreal-engine</a>
+			</li>
+			<li>
+				<p>Nehring-Wirxel, J., Trettner, P. and Kobbelt, L. (2021) “Fast exact booleans for iterated CSG using Octree-embedded bsps,” Computer-Aided Design, 135, p. 103015. Available at: https://doi.org/10.1016/j.cad.2021.103015. </p>
+			</li>
+			<li>Jiang, X. et al. (2016) “Efficient booleans algorithms for triangulated meshes of geometric modeling,” Computer-Aided Design and Applications, 13(4), pp. 419–430. Available at: https://doi.org/10.1080/16864360.2015.1131530. </li>
+			<li>
+				Trettner, P., Nehring-Wirxel, J. and Kobbelt, L. (2022) “EMBER: Exact Mesh Booleans via Efficient &amp; Robust Local Arrangements,” ACM Transactions on Graphics, 41(4), pp. 1–15. Available at: https://doi.org/10.1145/3528223.3530181. 
 			</li>
 		</ul>
 	</body>
